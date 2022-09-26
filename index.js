@@ -185,7 +185,7 @@ try {
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
                 path: dataFile,
-                message: "Added new team to the list",
+                message: "Added new entry for team " + jsonObject.teamName,
                 content: Buffer.from(jsonContent).toString('base64'),
                 sha: response.data.sha
             });
