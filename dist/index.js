@@ -9488,6 +9488,14 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 2966:
+/***/ ((module) => {
+
+module.exports = eval("require")("@octokit/rest");
+
+
+/***/ }),
+
 /***/ 1756:
 /***/ ((module) => {
 
@@ -9668,6 +9676,8 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(8864);
 const github = __nccwpck_require__(6366);
 const fs = __nccwpck_require__(7147);
+const { Octokit } = __nccwpck_require__(2966); 
+const octokit = new Octokit();
 
 try {
     // Get the issue body of which triggered this event
@@ -9726,8 +9736,8 @@ try {
         });*/
 
         // Commit the changes
-        const token = core.getInput('github-token');
-        const octokit = github.getOctokit(token);
+        //const token = core.getInput('github-token');
+        //const octokit = github.getOctokit(token);
 
         octokit.repos.createOrUpdateFileContents({
             owner: github.context.repo.owner,

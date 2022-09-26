@@ -1,6 +1,8 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const fs = require('fs');
+const { Octokit } = require('@octokit/rest'); 
+const octokit = new Octokit();
 
 try {
     // Get the issue body of which triggered this event
@@ -59,8 +61,8 @@ try {
         });*/
 
         // Commit the changes
-        const token = core.getInput('github-token');
-        const octokit = github.getOctokit(token);
+        //const token = core.getInput('github-token');
+        //const octokit = github.getOctokit(token);
 
         octokit.repos.createOrUpdateFileContents({
             owner: github.context.repo.owner,
