@@ -64,55 +64,97 @@ try {
 
 
         // Create markdown leaderboard table for each project 
-        var markdownTable = "#ETH Compiler Design HS22 Leaderboard\n\n";
+        var markdownTable = "# ETH Compiler Design HS22 Leaderboard\n\n";
         // Get best score for each time in each project and order by score
 
         // Get all projects
-        var projects = [];
-        for (var i = 0; i < jsonData.length; i++) {
-            var project = jsonData[i].project;
-            if (!projects.includes(project)) {
-                projects.push(project);
-            }
-        }
+        var publishedProjectIds = [1]; // TODO add peridically the other projectIds
 
-        // Get all teams
-        var teams = [];
-        for (var i = 0; i < jsonData.length; i++) {
-            var team = jsonData[i].teamName;
-            if (!teams.includes(team)) {
-                teams.push(team);
-            }
-        }
+        for (var i = 0; i < publishedProjectIds.length; i++) {
+            var projectName = "n/a";
+            var projectId = publishedProjectIds[i];
+            switch (projectId) {
+                case 1:
+                    projectName = "Hellocaml";
+                    break;
+                case 2:
+                    projectName = "x86Lite";
+                    break;
+                case 3:
+                    projectName = "Compiling LLVM";
+                    break;
+                case 4:
+                    projectName = "Compiling Oat v.1";
+                    break;
+                case 5:
+                    projectName = "Compiling Full Oat";
+                    break;
+                case 6:
+                    projectName = "Dataflow Analysis and Register Allocation";
+                    break;
 
-        // Get best score for each team in each project
-        var bestScores = [];
-        for (var i = 0; i < projects.length; i++) {
-            var project = projects[i];
-            for (var j = 0; j < teams.length; j++) {
-                var team = teams[j];
-                var bestScore = 0;
-                for (var k = 0; k < jsonData.length; k++) {
-                    if (jsonData[k].project == project && jsonData[k].teamName == team) {
-                        if (jsonData[k].score > bestScore) {
-                            bestScore = jsonData[k].score;
-                        }
+                default:
+                    projectName = "undefined";
+                    break;
+
+            }
+
+            markdownTable += "## " + projectName + "\n\n";
+
+            // Get all teams
+            var teams = [];
+            for (var i = 0; i < jsonData.length; i++) {
+                var team = jsonData[i].teamName;
+                if (!teams.includes(team)) {
+                    teams.push(team);
+                }
+            }
+
+            // Loop trough data
+
+
+            // Get best score for each team in each project
+            var bestScores = [{ projectId: -1, teamName: "n/a", score: 0 }];
+            for (var i = 0; i < jsonData.length; i++) {
+                var projects = jsonData[i].projects;
+                var currentProject = projects.find(x => x.projectId == projectId);
+                if (currentProject != undefined) {
+                    continue; // Skip if the team didnt submit a score for this project
+                }
+
+                // Find if ther exits a bestScore for the currentTeam
+                var currentTeam = jsonData[i].teamName;
+                var currentScore = currentProject.score;
+                var bestScore = bestScores.find(x => x.teamName == currentTeam);
+                if (bestScore == undefined) {
+                    bestScores.push({
+                        projectId: projectId,
+                        teamName: currentTeam,
+                        score: currentScore,
+                        passing: currentProject.passing,
+                        failing: currentProject.failing
+                    });
+                } else {
+                    if (currentScore > bestScore.score) {
+                        bestScore.score = currentScore;
                     }
                 }
-                bestScores.push({ "project": project, "team": team, "score": bestScore });
             }
-        }
 
-        // Sort the best scores by score
-        bestScores.sort(function (a, b) {
-            return b.score - a.score;
-        });
+            // Sort the best scores by score
+            bestScores.sort(function (a, b) {
+                return b.score - a.score;
+            });
 
-        // Create markdown table
-        markdownTable += "| Project | Team | Score |\n";
-        markdownTable += "| --- | --- | --- |\n";
-        for (var i = 0; i < bestScores.length; i++) {
-            markdownTable += "| " + bestScores[i].project + " | " + bestScores[i].team + " | " + bestScores[i].score + " |\n";
+            // Create markdown table
+            markdownTable += "| Position | Team | Score | % Score | Passing | Failing |\n";
+            markdownTable += "| --- | --- | --- | --- | --- | --- |\n";
+            for (var i = 0; i < bestScores.length; i++) {
+                var percentScore = (bestScores[i].score / 100).toFixed(2);
+                markdownTable += "| " + (i + 1) + "| " + bestScores[i].teamName + " | " + bestScores[i].score + " | " + percentScore + " | " + bestScores[i].passing + " | " + bestScores[i].failing + " |\n";
+            }
+
+            markdownTable += "\n\n";
         }
 
         // Commit the changes
