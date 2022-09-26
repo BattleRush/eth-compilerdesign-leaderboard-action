@@ -46,6 +46,8 @@ try {
 
         var content = data;
 
+        console.log("data.json: " + content);
+
         var jsonData = JSON.parse(content);
 
         jsonData.push(jsonObject);
@@ -64,7 +66,7 @@ try {
         const token = core.getInput('github-token');
         //const octokit = github.getOctokit(token);
         const octokit = new Octokit({ auth: token });
-        
+
         octokit.repos.createOrUpdateFileContents({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
