@@ -12047,32 +12047,6 @@ try {
             }
         });*/
 
-        // Commit the changes
-        const token = core.getInput('github-token');
-        //const octokit = github.getOctokit(token);
-        const octokit = new Octokit({ auth: token });
-
-        // Get sha of the data.json file
-
-        octokit.repos.getContent({
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            path: dataFile,
-        }).then((response) => {
-            console.log(response.data.sha);
-
-            octokit.repos.createOrUpdateFileContents({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                path: dataFile,
-                message: "Added new team to the list",
-                content: Buffer.from(jsonContent).toString('base64'),
-                sha: response.data.sha
-            });
-        }).catch((error) => {
-            console.error(error);
-        });
-
 
         // Create markdown leaderboard table for each project 
         var markdownTable = "#ETH Compiler Design HS22 Leaderboard\n\n";
@@ -12126,24 +12100,54 @@ try {
             markdownTable += "| " + bestScores[i].project + " | " + bestScores[i].team + " | " + bestScores[i].score + " |\n";
         }
 
+        // Commit the changes
+        const token = core.getInput('github-token');
+        //const octokit = github.getOctokit(token);
+        const octokit = new Octokit({ auth: token });
+
+        // Get sha of the data.json file
+
         octokit.repos.getContent({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
-            path: "README.md",
+            path: dataFile,
         }).then((response) => {
             console.log(response.data.sha);
 
             octokit.repos.createOrUpdateFileContents({
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
-                path: "README.md",
-                message: "Update global leaderboard",
+                path: dataFile,
+                message: "Added new team to the list",
                 content: Buffer.from(jsonContent).toString('base64'),
                 sha: response.data.sha
+            });
+
+            octokit.repos.getContent({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                path: "README.md",
+            }).then((response) => {
+                console.log(response.data.sha);
+
+                octokit.repos.createOrUpdateFileContents({
+                    owner: github.context.repo.owner,
+                    repo: github.context.repo.repo,
+                    path: "README.md",
+                    message: "Update global leaderboard",
+                    content: Buffer.from(jsonContent).toString('base64'),
+                    sha: response.data.sha
+                });
+            }).catch((error) => {
+                console.error(error);
             });
         }).catch((error) => {
             console.error(error);
         });
+
+
+
+
 
     });
 
