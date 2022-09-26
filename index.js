@@ -150,7 +150,7 @@ try {
                     repo: github.context.repo.repo,
                     path: "README.md",
                     message: "Update global leaderboard",
-                    content: Buffer.from(jsonContent).toString('base64'),
+                    content: Buffer.from(markdownTable).toString('base64'),
                     sha: response.data.sha
                 });
             }).catch((error) => {
