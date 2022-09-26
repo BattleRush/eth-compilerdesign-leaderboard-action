@@ -9726,7 +9726,9 @@ try {
         });*/
 
         // Commit the changes
-        const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+        const token = core.getInput('github-token');
+        const octokit = github.getOctokit(token);
+
         octokit.repos.createOrUpdateFileContents({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,

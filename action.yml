@@ -1,5 +1,9 @@
 name: 'ETH Compiler Design Leaderboard Action'
 description: 'Reads each new issue and parses the input to add to the leaderboard'
+inputs:
+  github-token:
+    description: 'The GitHub token'
+    required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'
