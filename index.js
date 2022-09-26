@@ -73,26 +73,33 @@ try {
         for (var i = 0; i < publishedProjectIds.length; i++) {
 
             var projectName = "n/a";
+            var maxScore = -1;
             var projectId = publishedProjectIds[i];
 
             switch (projectId) {
                 case 1:
                     projectName = "Project 1: Hellocaml";
+                    maxScore = 67;
                     break;
                 case 2:
                     projectName = "Project 2: x86Lite";
+                    maxScore = 46;
                     break;
                 case 3:
                     projectName = "Project 3: Compiling LLVM";
+                    maxScore = 77;
                     break;
                 case 4:
                     projectName = "Project 4: Compiling Oat v.1";
+                    maxScore = -1;
                     break;
                 case 5:
                     projectName = "Project 5: Compiling Full Oat";
+                    maxScore = 80;
                     break;
                 case 6:
                     projectName = "Project 6: Dataflow Analysis and Register Allocation";
+                    maxScore = 100;
                     break;
 
                 default:
@@ -102,6 +109,7 @@ try {
             }
 
             markdownTable += "## " + projectName + "\n\n";
+            markdownTable += "### Max score: " + maxScore + "\n\n";
 
             // Get all teams
             var teams = [];
@@ -152,7 +160,7 @@ try {
             markdownTable += "| Position | Team | Score | % Score | Passing | Failing |\n";
             markdownTable += "| --- | --- | --- | --- | --- | --- |\n";
             for (var i = 0; i < bestScores.length; i++) {
-                var percentScore = Math.round(bestScores[i].score / bestScores[i].maxScire * 10000) / 100;
+                var percentScore = Math.round(bestScores[i].score / maxScore * 10000) / 100;
                 markdownTable += "| " + (i + 1) + "| " + bestScores[i].teamName + " | " + bestScores[i].score + " | " + percentScore + " | " + bestScores[i].passed + " | " + bestScores[i].failed + " |\n";
             }
 
@@ -205,7 +213,7 @@ try {
                     console.error(error);
                 });
             }, 5000);
-            
+
         }).catch((error) => {
             console.error(error);
         });
