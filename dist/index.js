@@ -12058,7 +12058,6 @@ try {
             path: dataFile,
             message: "Added new team to the list",
             content: Buffer.from(jsonContent).toString('base64'),
-            sha: github.context.sha
         });
     });
 
