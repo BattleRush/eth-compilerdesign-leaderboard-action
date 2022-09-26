@@ -208,6 +208,14 @@ try {
                         sha: response.data.sha
                     });
 
+                    // Close issue
+                    octokit.rest.issues.update({
+                        owner: owner,
+                        repo: repo,
+                        issue_number: github.context.payload.issue.number,
+                        state: 'closed'
+                      })
+
                     // TODO Close issue
                 }).catch((error) => {
                     console.error(error);

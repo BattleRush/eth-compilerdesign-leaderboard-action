@@ -12145,7 +12145,7 @@ try {
             markdownTable += "| Position | Team | Score | % Score | Passing | Failing |\n";
             markdownTable += "| --- | --- | --- | --- | --- | --- |\n";
             for (var i = 0; i < bestScores.length; i++) {
-                var percentScore = Math.round(bestScores[i].score / bestScores[i].maxScore * 10000) / 100;
+                var percentScore = Math.round(bestScores[i].score / maxScore * 10000) / 100;
                 markdownTable += "| " + (i + 1) + "| " + bestScores[i].teamName + " | " + bestScores[i].score + " | " + percentScore + " | " + bestScores[i].passed + " | " + bestScores[i].failed + " |\n";
             }
 
@@ -12192,6 +12192,14 @@ try {
                         content: Buffer.from(markdownTable).toString('base64'),
                         sha: response.data.sha
                     });
+
+                    // Close issue
+                    octokit.rest.issues.update({
+                        owner: owner,
+                        repo: repo,
+                        issue_number: github.context.payload.issue.number,
+                        state: 'closed'
+                      })
 
                     // TODO Close issue
                 }).catch((error) => {
