@@ -6685,7 +6685,7 @@ const core = __nccwpck_require__(806);
 const github = __nccwpck_require__(946);
 const fs = __nccwpck_require__(147);
 const { Octokit } = __nccwpck_require__(92); 
-const octokit = new Octokit();
+
 
 try {
     // Get the issue body of which triggered this event
@@ -6744,9 +6744,10 @@ try {
         });*/
 
         // Commit the changes
-        //const token = core.getInput('github-token');
+        const token = core.getInput('github-token');
         //const octokit = github.getOctokit(token);
-
+        const octokit = new Octokit({ auth: token });
+        
         octokit.repos.createOrUpdateFileContents({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
