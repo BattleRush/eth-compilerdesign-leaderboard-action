@@ -12056,26 +12056,28 @@ try {
         var publishedProjectIds = [1]; // TODO add peridically the other projectIds
 
         for (var i = 0; i < publishedProjectIds.length; i++) {
+
             var projectName = "n/a";
             var projectId = publishedProjectIds[i];
+
             switch (projectId) {
                 case 1:
-                    projectName = "Hellocaml";
+                    projectName = "Project 1: Hellocaml";
                     break;
                 case 2:
-                    projectName = "x86Lite";
+                    projectName = "Project 2: x86Lite";
                     break;
                 case 3:
-                    projectName = "Compiling LLVM";
+                    projectName = "Project 3: Compiling LLVM";
                     break;
                 case 4:
-                    projectName = "Compiling Oat v.1";
+                    projectName = "Project 4: Compiling Oat v.1";
                     break;
                 case 5:
-                    projectName = "Compiling Full Oat";
+                    projectName = "Project 5: Compiling Full Oat";
                     break;
                 case 6:
-                    projectName = "Dataflow Analysis and Register Allocation";
+                    projectName = "Project 6: Dataflow Analysis and Register Allocation";
                     break;
 
                 default:
@@ -12099,11 +12101,11 @@ try {
 
 
             // Get best score for each team in each project
-            var bestScores = [{ projectId: -1, teamName: "n/a", score: 0 }];
+            var bestScores = [];
             for (var i = 0; i < jsonData.length; i++) {
                 var projects = jsonData[i].projects;
                 var currentProject = projects.find(x => x.projectId == projectId);
-                if (currentProject != undefined) {
+                if (!currentProject) {
                     continue; // Skip if the team didnt submit a score for this project
                 }
 
@@ -12180,6 +12182,8 @@ try {
                     content: Buffer.from(markdownTable).toString('base64'),
                     sha: response.data.sha
                 });
+
+                // TODO Close issue
             }).catch((error) => {
                 console.error(error);
             });
