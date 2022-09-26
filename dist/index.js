@@ -11986,14 +11986,14 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(8864);
 const github = __nccwpck_require__(6366);
 const fs = __nccwpck_require__(7147);
-const { Octokit } = __nccwpck_require__(3092); 
+const { Octokit } = __nccwpck_require__(3092);
 
 
 try {
     // Get the issue body of which triggered this event
     const issueBody = github.context.payload.issue.body;
 
-    
+
     // Get value inbetween "</summary>"" and "</details>"" tags by splitting
     var issueBodyDetails = issueBody.split("</summary>")[1].split("</details>")[0];
 
@@ -12007,9 +12007,9 @@ try {
     console.log(issueBodyDetails);
     // TODO Verify the JSON is valid and isnt fucking up stuff
 
-    if(issueBodyDetails.length < 2000) {
+    if (issueBodyDetails.length < 2000) {
         // Verify the json fields are valid
-        
+
         /*var newJson = {
             "teamName": json.teamName,
         }*/
@@ -12061,18 +12061,22 @@ try {
         }).then((response) => {
             console.log(response.data.sha);
             sha = response.data.sha;
+
+            octokit.repos.createOrUpdateFileContents({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                path: dataFile,
+                message: "Added new team to the list",
+                content: Buffer.from(jsonContent).toString('base64'),
+                sha: sha
+            });
         }).catch((error) => {
             console.error(error);
         });
 
-        octokit.repos.createOrUpdateFileContents({
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            path: dataFile,
-            message: "Added new team to the list",
-            content: Buffer.from(jsonContent).toString('base64'),
-            sha: sha
-        });
+
+
+
     });
 
 
