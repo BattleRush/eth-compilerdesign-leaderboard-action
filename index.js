@@ -8,7 +8,7 @@ try {
 
     
     // Get value inbetween "</summary>"" and "</details>"" tags by splitting
-    const issueBodyDetails = issueBody.split("</summary>")[1].split("</details>")[0];
+    var issueBodyDetails = issueBody.split("</summary>")[1].split("</details>")[0];
 
     // Remove codeblock in markdown
     issueBodyDetails = issueBodyDetails.replace(/```/g, "");
