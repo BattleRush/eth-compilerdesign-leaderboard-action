@@ -1,12 +1,68 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const fs = require('fs')
+const fs = require('fs');
 
 try {
     // Get the issue body of which triggered this event
     const issueBody = github.context.payload.issue.body;
 
     
+    // Get value inbetween "</summary>"" and "</details>"" tags by splitting
+    const issueBodyDetails = issueBody.split("</summary>")[1].split("</details>")[0];
+
+
+    console.log(issueBodyDetails);
+    // TODO Verify the JSON is valid and isnt fucking up stuff
+
+    if(issueBodyDetails.length < 2000) {
+        // Verify the json fields are valid
+        
+        /*var newJson = {
+            "teamName": json.teamName,
+        }*/
+
+    } else {
+        core.setFailed("The issue body is too long. Please shorten it to 2000 characters or less.");
+        //return; 
+    }
+
+    const jsonObject = JSON.parse(issueBodyDetails);
+
+
+    var dataFile = "data.json";
+    fs.readFile(dataFile, 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+
+        var content = data;
+
+        var jsonData = JSON.parse(content);
+
+        jsonData.push(jsonObject);
+
+        var jsonContent = JSON.stringify(jsonData);
+
+        // Write the file back to github and commit the changes
+        /*fs.writeFile(dataFile, jsonContent, 'utf8', (err) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+        });*/
+
+        // Commit the changes
+        const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+        octokit.repos.createOrUpdateFileContents({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            path: dataFile,
+            message: "Added new team to the list",
+            content: Buffer.from(jsonContent).toString('base64'),
+            sha: github.context.sha
+        });
+    });
 
 
     // Get the JSON webhook payload for the event that triggered the workflow
