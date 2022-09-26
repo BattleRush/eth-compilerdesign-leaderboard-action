@@ -68,14 +68,13 @@ try {
         const octokit = new Octokit({ auth: token });
 
         // Get sha of the data.json file
-        var sha = "";
+
         octokit.repos.getContent({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             path: dataFile,
         }).then((response) => {
             console.log(response.data.sha);
-            sha = response.data.sha;
 
             octokit.repos.createOrUpdateFileContents({
                 owner: github.context.repo.owner,
@@ -83,12 +82,83 @@ try {
                 path: dataFile,
                 message: "Added new team to the list",
                 content: Buffer.from(jsonContent).toString('base64'),
-                sha: sha
+                sha: response.data.sha
             });
         }).catch((error) => {
             console.error(error);
         });
 
+
+        // Create markdown leaderboard table for each project 
+        var markdownTable = "#ETH Compiler Design HS22 Leaderboard\n\n";
+        // Get best score for each time in each project and order by score
+
+        // Get all projects
+        var projects = [];
+        for (var i = 0; i < jsonData.length; i++) {
+            var project = jsonData[i].project;
+            if (!projects.includes(project)) {
+                projects.push(project);
+            }
+        }
+
+        // Get all teams
+        var teams = [];
+        for (var i = 0; i < jsonData.length; i++) {
+            var team = jsonData[i].teamName;
+            if (!teams.includes(team)) {
+                teams.push(team);
+            }
+        }
+
+        // Get best score for each team in each project
+        var bestScores = [];
+        for (var i = 0; i < projects.length; i++) {
+            var project = projects[i];
+            for (var j = 0; j < teams.length; j++) {
+                var team = teams[j];
+                var bestScore = 0;
+                for (var k = 0; k < jsonData.length; k++) {
+                    if (jsonData[k].project == project && jsonData[k].teamName == team) {
+                        if (jsonData[k].score > bestScore) {
+                            bestScore = jsonData[k].score;
+                        }
+                    }
+                }
+                bestScores.push({ "project": project, "team": team, "score": bestScore });
+            }
+        }
+
+        // Sort the best scores by score
+        bestScores.sort(function (a, b) {
+            return b.score - a.score;
+        });
+
+        // Create markdown table
+        markdownTable += "| Project | Team | Score |\n";
+        markdownTable += "| --- | --- | --- |\n";
+        for (var i = 0; i < bestScores.length; i++) {
+            markdownTable += "| " + bestScores[i].project + " | " + bestScores[i].team + " | " + bestScores[i].score + " |\n";
+        }
+
+        octokit.repos.getContent({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            path: "README.md",
+        }).then((response) => {
+            console.log(response.data.sha);
+
+            octokit.repos.createOrUpdateFileContents({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                path: "README.md",
+                message: "Update global leaderboard",
+                content: Buffer.from(jsonContent).toString('base64'),
+                sha: response.data.sha
+            });
+        }).catch((error) => {
+            console.error(error);
+        });
 
     });
 
