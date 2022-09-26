@@ -134,6 +134,15 @@ try {
 
                 // Find if ther exits a bestScore for the currentTeam
                 var currentTeam = jsonData[i].teamName;
+
+                // Limit team name to 50 chars
+                if (currentTeam.length > 50) {
+                    currentTeam = currentTeam.substring(0, 50);
+                }
+
+                // Allow empty space and alphanumeric chars
+                currentTeam = currentTeam.replace(/[^a-zA-Z0-9 ]/g, "");
+
                 var currentScore = currentProject.score;
                 var bestScore = bestScores.find(x => x.teamName == currentTeam);
                 if (bestScore == undefined) {
