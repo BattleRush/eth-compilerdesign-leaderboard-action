@@ -182,26 +182,30 @@ try {
                 sha: response.data.sha
             });
 
-            octokit.repos.getContent({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                path: "README.md",
-            }).then((response) => {
-                console.log(response.data.sha);
-
-                octokit.repos.createOrUpdateFileContents({
+            // Sleep for 5 seconds to make sure the file is commited before we commit the leaderboard
+            setTimeout(function () {
+                octokit.repos.getContent({
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     path: "README.md",
-                    message: "Update global leaderboard",
-                    content: Buffer.from(markdownTable).toString('base64'),
-                    sha: response.data.sha
-                });
+                }).then((response) => {
+                    console.log(response.data.sha);
 
-                // TODO Close issue
-            }).catch((error) => {
-                console.error(error);
-            });
+                    octokit.repos.createOrUpdateFileContents({
+                        owner: github.context.repo.owner,
+                        repo: github.context.repo.repo,
+                        path: "README.md",
+                        message: "Update global leaderboard",
+                        content: Buffer.from(markdownTable).toString('base64'),
+                        sha: response.data.sha
+                    });
+
+                    // TODO Close issue
+                }).catch((error) => {
+                    console.error(error);
+                });
+            }, 5000);
+            
         }).catch((error) => {
             console.error(error);
         });
