@@ -10,6 +10,12 @@ try {
     // Get value inbetween "</summary>"" and "</details>"" tags by splitting
     const issueBodyDetails = issueBody.split("</summary>")[1].split("</details>")[0];
 
+    // Remove codeblock in markdown
+    issueBodyDetails = issueBodyDetails.replace(/```/g, "");
+
+    // Trim "json" at the beginning of the string
+    issueBodyDetails = issueBodyDetails.trim().substring(4);
+
 
     console.log(issueBodyDetails);
     // TODO Verify the JSON is valid and isnt fucking up stuff
