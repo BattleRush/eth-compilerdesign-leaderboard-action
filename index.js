@@ -133,8 +133,8 @@ try {
                         projectId: projectId,
                         teamName: currentTeam,
                         score: currentScore,
-                        passing: currentProject.passing,
-                        failing: currentProject.failing
+                        passed: currentProject.passed,
+                        failed: currentProject.failed
                     });
                 } else {
                     if (currentScore > bestScore.score) {
@@ -152,8 +152,8 @@ try {
             markdownTable += "| Position | Team | Score | % Score | Passing | Failing |\n";
             markdownTable += "| --- | --- | --- | --- | --- | --- |\n";
             for (var i = 0; i < bestScores.length; i++) {
-                var percentScore = (bestScores[i].score / 100).toFixed(2);
-                markdownTable += "| " + (i + 1) + "| " + bestScores[i].teamName + " | " + bestScores[i].score + " | " + percentScore + " | " + bestScores[i].passing + " | " + bestScores[i].failing + " |\n";
+                var percentScore = Math.round(bestScores[i].score / bestScores[i].maxScire * 10000) / 100;
+                markdownTable += "| " + (i + 1) + "| " + bestScores[i].teamName + " | " + bestScores[i].score + " | " + percentScore + " | " + bestScores[i].passed + " | " + bestScores[i].failed + " |\n";
             }
 
             markdownTable += "\n\n";
