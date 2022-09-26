@@ -12052,12 +12052,26 @@ try {
         //const octokit = github.getOctokit(token);
         const octokit = new Octokit({ auth: token });
 
+        // Get sha of the data.json file
+        var sha = "";
+        octokit.repos.getContent({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            path: dataFile,
+        }).then((response) => {
+            console.log(response.data.sha);
+            sha = response.data.sha;
+        }).catch((error) => {
+            console.error(error);
+        });
+
         octokit.repos.createOrUpdateFileContents({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             path: dataFile,
             message: "Added new team to the list",
             content: Buffer.from(jsonContent).toString('base64'),
+            sha: sha
         });
     });
 
