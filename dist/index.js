@@ -12195,8 +12195,8 @@ try {
 
                     // Close issue
                     octokit.rest.issues.update({
-                        owner: owner,
-                        repo: repo,
+                        owner: github.context.repo.owner,
+                        repo: github.context.repo.repo,
                         issue_number: github.context.payload.issue.number,
                         state: 'closed'
                       })
